@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAD MONKEY · World Cup 2026 fixture tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,800;1,900&family=Bungee&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MAD MONKEY — World Cup 2026 fixture tracker
+   tokens lifted from the B2C design system
+   ============================================================ */
+:root{
+  --mm-black:#0a0a0a;
+  --mm-bone:#f5efe2;
+  --mm-paper:#fff;
+  --mm-ink:#111;
+  --mm-blue:#0081f7;
+  --mm-yellow:#ffc000;
+  --mm-lime:#ccff01;
+  --mm-cyan:#00fef3;
+  --mm-orange:#ff6600;
+  --mm-green:#03ff01;
+  --mm-purple:#ab00ff;
+  --mm-pink:#ff01aa;
+  --font-display:'Montserrat','Helvetica Neue',sans-serif;
+  --font-body:'Montserrat',system-ui,sans-serif;
+  --font-sticker:'Bungee','Montserrat',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--mm-bone);color:var(--mm-ink);font-family:var(--font-body);font-weight:500;line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+::selection{background:var(--mm-lime);color:var(--mm-black)}
+button{font:inherit;color:inherit;border:none;background:none;cursor:pointer;padding:0}
+input,select{font:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+h1,h2,h3,h4,h5,h6{margin:0;font-weight:900}
+
+/* ============================================================
+   GLOBAL LAYOUT
+   ============================================================ */
+.app{max-width:560px;margin:0 auto;padding:0 18px 96px;position:relative}
+@media(min-width:600px){.app{padding:0 24px 96px}}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{padding:20px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.brand-mark{width:42px;height:42px;background:var(--mm-black);border:3px solid var(--mm-black);border-radius:50%;display:grid;place-items:center;overflow:hidden;flex-shrink:0;box-shadow:4px 4px 0 0 var(--mm-lime)}
+.brand-mark img{width:100%;height:auto;margin-top:4px}
+.brand-text{font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-size:14px;line-height:.92;letter-spacing:-0.01em}
+.brand-text small{display:block;font-size:9px;font-weight:600;letter-spacing:0.16em;opacity:.55;margin-top:3px;text-transform:uppercase}
+
+.allin{font-family:var(--font-display);font-weight:900;text-transform:uppercase;background:var(--mm-black);color:var(--mm-paper);padding:7px 12px 5px;font-size:18px;line-height:.85;letter-spacing:-0.01em;display:inline-block;transform:rotate(-3deg);box-shadow:4px 4px 0 0 rgba(0,0,0,.18),7px 7px 0 0 var(--mm-bone),7px 7px 0 2px var(--mm-black);flex-shrink:0}
+
+/* ============================================================
+   POSTER HEADER
+   ============================================================ */
+.poster{background:var(--mm-black);color:var(--mm-paper);padding:26px 22px 28px;margin:14px 0 0;border:3px solid var(--mm-black);box-shadow:6px 6px 0 0 var(--mm-lime);position:relative;overflow:hidden}
+.poster h1{font-family:var(--font-display);font-weight:900;font-size:clamp(38px,10vw,56px);line-height:.86;letter-spacing:-0.025em;text-transform:uppercase;text-wrap:balance}
+.poster h1 .lime{color:var(--mm-lime);display:inline-block;transform:rotate(-1deg)}
+.poster h1 .pink{color:var(--mm-pink)}
+.poster .kicker{font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:11px;letter-spacing:0.18em;color:var(--mm-lime);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.poster .kicker::before{content:"";width:24px;height:3px;background:var(--mm-lime);display:inline-block}
+.poster p.sub{margin:14px 0 0;font-size:14px;font-weight:500;color:rgba(255,255,255,.78);max-width:34ch;line-height:1.45}
+.poster .corner{position:absolute;right:-14px;top:-14px;width:90px;height:90px;background:var(--mm-pink);transform:rotate(20deg);border:3px solid var(--mm-black);display:grid;place-items:center;text-align:center;font-family:var(--font-display);font-weight:900;color:var(--mm-black);font-size:13px;line-height:.92;padding:8px}
+
+/* ============================================================
+   SECTION BLOCKS
+   ============================================================ */
+.section{margin-top:24px}
+.section-label{font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-size:11px;letter-spacing:0.18em;color:var(--mm-ink);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:"";flex:1;height:3px;background:var(--mm-black)}
+
+/* ============================================================
+   TIMEZONE PICKER
+   ============================================================ */
+.tz-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.tz-btn{background:var(--mm-paper);border:2px solid var(--mm-black);padding:10px 4px 8px;text-align:center;font-family:var(--font-display);font-weight:800;cursor:pointer;transition:transform .12s cubic-bezier(.34,1.56,.64,1),background .12s;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1;min-height:64px;justify-content:center}
+.tz-btn .flag{font-size:22px;line-height:1}
+.tz-btn .name{font-size:9px;letter-spacing:0.04em;text-transform:uppercase}
+.tz-btn:hover{background:var(--mm-lime);transform:translate(-2px,-2px) rotate(-1.5deg);box-shadow:3px 3px 0 0 var(--mm-black)}
+.tz-btn[aria-pressed="true"]{background:var(--mm-black);color:var(--mm-paper);box-shadow:3px 3px 0 0 var(--mm-lime)}
+.tz-btn[aria-pressed="true"] .name{color:var(--mm-lime)}
+.tz-note{margin-top:8px;font-size:11px;font-weight:500;color:rgba(17,17,17,.6);text-align:center}
+
+/* ============================================================
+   TEAM PICKER
+   ============================================================ */
+.team-search{position:relative;margin-bottom:10px}
+.team-search input{width:100%;background:var(--mm-paper);border:3px solid var(--mm-black);padding:14px 16px 14px 44px;font-family:var(--font-display);font-weight:700;font-size:15px;outline:none;letter-spacing:0.01em}
+.team-search input::placeholder{color:rgba(17,17,17,.42);font-weight:600;text-transform:none;letter-spacing:0}
+.team-search input:focus{box-shadow:4px 4px 0 0 var(--mm-pink)}
+.team-search .icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--mm-black);pointer-events:none}
+
+.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;max-height:340px;overflow-y:auto;border:3px solid var(--mm-black);background:var(--mm-paper);padding:8px}
+.team-row{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--mm-bone);border:2px solid var(--mm-black);cursor:pointer;font-family:var(--font-display);font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:0.01em;line-height:1.05;text-align:left;transition:transform .12s,background .12s}
+.team-row:hover{background:var(--mm-lime);transform:translate(-1px,-1px)}
+.team-row[aria-pressed="true"]{background:var(--mm-black);color:var(--mm-lime);box-shadow:3px 3px 0 0 var(--mm-pink)}
+.team-row .flag{font-size:18px;line-height:1;flex-shrink:0}
+.team-row .grp{margin-left:auto;font-size:9px;background:var(--mm-black);color:var(--mm-lime);padding:2px 5px;border-radius:2px;letter-spacing:0.08em}
+.team-row[aria-pressed="true"] .grp{background:var(--mm-lime);color:var(--mm-black)}
+
+/* ============================================================
+   TEAM RESULT — the FAN CARD
+   ============================================================ */
+.fan-card{margin-top:24px}
+
+.team-banner{background:var(--mm-lime);color:var(--mm-black);padding:18px 20px 20px;border:3px solid var(--mm-black);box-shadow:6px 6px 0 0 var(--mm-black);position:relative;overflow:hidden}
+.team-banner .flag-big{font-size:54px;line-height:1;margin-bottom:6px}
+.team-banner h2{font-family:var(--font-display);font-weight:900;font-size:clamp(34px,9vw,52px);line-height:.86;letter-spacing:-0.02em;text-transform:uppercase}
+.team-banner .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;padding:5px 9px;background:var(--mm-black);color:var(--mm-lime);line-height:1.1}
+.tag.alt{background:var(--mm-paper);color:var(--mm-black);border:2px solid var(--mm-black)}
+.tag.pink{background:var(--mm-pink);color:var(--mm-black)}
+
+.group-strip{margin-top:18px;background:var(--mm-paper);border:3px solid var(--mm-black);padding:14px 16px;box-shadow:4px 4px 0 0 var(--mm-black)}
+.group-strip h3{font-family:var(--font-display);font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:0.16em;margin-bottom:8px}
+.group-strip .group-list{display:flex;flex-wrap:wrap;gap:4px}
+.opp{display:flex;align-items:center;gap:5px;font-family:var(--font-display);font-weight:700;font-size:11px;text-transform:uppercase;padding:4px 8px;background:var(--mm-bone);border:1.5px solid var(--mm-black)}
+.opp.self{background:var(--mm-black);color:var(--mm-lime)}
+
+/* fixture card */
+.fix{background:var(--mm-paper);border:3px solid var(--mm-black);padding:14px 16px;box-shadow:5px 5px 0 0 var(--mm-black);position:relative;margin-bottom:12px}
+.fix.day-night{background:var(--mm-black);color:var(--mm-paper);box-shadow:5px 5px 0 0 var(--mm-pink)}
+.fix.day-night .fix-vs{color:var(--mm-lime)}
+.fix.day-night .fix-venue,.fix.day-night .fix-md{color:rgba(255,255,255,.72)}
+.fix-md{font-family:var(--font-display);font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:rgba(17,17,17,.55)}
+.fix-vs{font-family:var(--font-display);font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:-0.01em;line-height:1.05;margin:4px 0 6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fix-vs .v{font-size:14px;font-weight:700;color:var(--mm-pink);font-style:italic;display:inline-block;transform:translateY(-2px)}
+.fix-vs .flag{font-size:22px;line-height:1}
+.fix-venue{font-size:12px;font-weight:600;color:rgba(17,17,17,.6);display:flex;align-items:center;gap:6px;margin-top:4px}
+.fix-venue::before{content:"📍";font-size:11px;filter:grayscale(.4)}
+.fix-time{display:flex;gap:10px;align-items:baseline;margin-top:10px;flex-wrap:wrap}
+.fix-time .day{font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-size:13px;background:var(--mm-lime);color:var(--mm-black);padding:4px 8px;letter-spacing:0.06em}
+.fix.day-night .fix-time .day{background:var(--mm-pink)}
+.fix-time .ko{font-family:var(--font-display);font-weight:900;font-size:22px;line-height:1;letter-spacing:-0.01em}
+.fix-time .ko-meta{font-size:11px;font-weight:600;color:rgba(17,17,17,.55);text-transform:uppercase;letter-spacing:0.06em}
+.fix.day-night .fix-time .ko-meta{color:rgba(255,255,255,.55)}
+
+/* path cards */
+.path-toggle{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.path-btn{font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-size:12px;letter-spacing:0.04em;padding:14px 10px;background:var(--mm-paper);color:var(--mm-black);border:3px solid var(--mm-black);cursor:pointer;line-height:1.1;transition:transform .12s}
+.path-btn:hover{transform:translate(-2px,-2px);background:var(--mm-cyan)}
+.path-btn[aria-pressed="true"]{background:var(--mm-black);color:var(--mm-lime);box-shadow:4px 4px 0 0 var(--mm-lime)}
+.path-btn small{display:block;font-size:9px;font-weight:600;letter-spacing:0.12em;margin-top:3px;opacity:.6}
+
+.path-intro{font-size:14px;font-weight:500;margin-bottom:14px;color:rgba(17,17,17,.78);line-height:1.5}
+.path-intro strong{font-weight:800;color:var(--mm-black)}
+
+.ko{background:var(--mm-paper);border:3px solid var(--mm-black);padding:14px 16px;box-shadow:4px 4px 0 0 var(--mm-black);margin-bottom:10px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.ko-stage{font-family:var(--font-display);font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;background:var(--mm-black);color:var(--mm-lime);padding:6px 8px;line-height:1;align-self:start;margin-top:2px;writing-mode:vertical-rl;transform:rotate(180deg);min-height:60px;display:flex;align-items:center;justify-content:center}
+.ko.final .ko-stage{background:var(--mm-pink);color:var(--mm-black)}
+.ko.sf .ko-stage{background:var(--mm-orange);color:var(--mm-black)}
+.ko-body{min-width:0}
+.ko-vs{font-family:var(--font-display);font-weight:800;font-size:14px;line-height:1.2;text-transform:uppercase;letter-spacing:-0.005em}
+.ko-vs strong{font-weight:900;display:block;font-size:16px;color:var(--mm-black)}
+.ko-venue{font-size:11px;color:rgba(17,17,17,.6);margin-top:5px;font-weight:600}
+.ko-when{text-align:right;flex-shrink:0}
+.ko-when .day{font-family:var(--font-display);font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;background:var(--mm-bone);border:1.5px solid var(--mm-black);padding:3px 6px;line-height:1;display:inline-block;margin-bottom:4px}
+.ko-when .ko-time{font-family:var(--font-display);font-weight:900;font-size:17px;line-height:1;letter-spacing:-0.01em;display:block;margin-top:3px}
+
+.path-note{background:var(--mm-bone);border:3px dashed var(--mm-black);padding:14px 16px;font-size:13px;font-weight:500;line-height:1.5;margin-top:12px}
+.path-note strong{font-weight:800;text-transform:uppercase;font-size:11px;letter-spacing:0.12em;display:block;margin-bottom:6px;color:var(--mm-pink)}
+
+/* third place note */
+.third-card{background:var(--mm-yellow);color:var(--mm-black);border:3px solid var(--mm-black);padding:16px 18px;box-shadow:5px 5px 0 0 var(--mm-black);margin-top:14px}
+.third-card h4{font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-size:15px;letter-spacing:-0.01em;margin-bottom:6px;line-height:1.05}
+.third-card p{margin:0;font-size:13px;font-weight:500;line-height:1.5}
+
+/* outro / cta */
+.outro{margin-top:32px;background:var(--mm-pink);color:var(--mm-black);border:3px solid var(--mm-black);padding:22px 22px 24px;box-shadow:6px 6px 0 0 var(--mm-black);position:relative}
+.outro h3{font-family:var(--font-display);font-weight:900;font-size:clamp(22px,6vw,30px);line-height:.92;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:10px;text-wrap:balance}
+.outro p{margin:0 0 14px;font-size:14px;font-weight:600;line-height:1.5;max-width:34ch}
+.outro .cta-row{display:flex;gap:10px;flex-wrap:wrap}
+.outro .cta{display:inline-block;font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-size:13px;letter-spacing:0.02em;background:var(--mm-black);color:var(--mm-paper);padding:12px 16px;border:2px solid var(--mm-black);transition:transform .12s}
+.outro .cta:hover{background:var(--mm-lime);color:var(--mm-black);transform:translate(-2px,-2px) rotate(-1.5deg)}
+
+/* starburst */
+.starburst{position:absolute;width:84px;height:84px;background:var(--mm-lime);color:var(--mm-black);display:grid;place-items:center;text-align:center;font-family:var(--font-display);font-weight:900;font-size:11px;line-height:.95;padding:4px;text-transform:uppercase;letter-spacing:0.03em;clip-path:polygon(50% 0%,58% 12%,71% 5%,72% 20%,86% 18%,80% 32%,95% 35%,84% 47%,100% 50%,84% 60%,95% 70%,80% 73%,86% 88%,72% 86%,71% 100%,58% 93%,50% 100%,42% 93%,29% 100%,28% 86%,14% 88%,20% 73%,5% 70%,16% 60%,0% 50%,16% 47%,5% 35%,20% 32%,14% 18%,28% 20%,29% 5%,42% 12%)}
+
+/* empty/initial state */
+.empty{margin-top:24px;background:var(--mm-paper);border:3px solid var(--mm-black);padding:30px 22px;box-shadow:6px 6px 0 0 var(--mm-cyan);text-align:center}
+.empty .big{font-family:var(--font-display);font-weight:900;font-size:34px;line-height:.88;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:8px}
+.empty .big .arrow{color:var(--mm-pink);display:inline-block;transform:rotate(-12deg) translateY(-3px)}
+.empty p{margin:0;font-size:13px;font-weight:600;color:rgba(17,17,17,.7);line-height:1.5}
+
+/* logo feature block */
+.logo-feature{margin-top:28px;background:var(--mm-black);color:var(--mm-paper);padding:28px 24px;border:3px solid var(--mm-black);box-shadow:7px 7px 0 0 var(--mm-lime);display:flex;align-items:center;justify-content:center;gap:18px;position:relative}
+.logo-feature .lf-mark{width:72px;height:72px;background:var(--mm-black);border:3px solid var(--mm-paper);border-radius:50%;display:grid;place-items:center;overflow:hidden;flex-shrink:0}
+.logo-feature .lf-mark img{width:100%;height:auto;margin-top:6px}
+.logo-feature .lf-text{font-family:var(--font-display);font-weight:900;font-size:24px;line-height:.92;letter-spacing:-0.015em;text-transform:uppercase}
+.logo-feature .lf-text small{display:block;font-size:10px;font-weight:700;letter-spacing:0.24em;margin-top:7px;color:var(--mm-lime);text-transform:uppercase}
+
+/* footer */
+.footer{margin-top:30px;padding:14px 0 0;border-top:2px solid var(--mm-black);font-size:11px;font-weight:600;color:rgba(17,17,17,.55);text-align:center;line-height:1.5}
+.footer .small{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;margin-top:6px;opacity:.7}
+
+/* utility */
+.hidden{display:none!important}
+
+/* tiny screens */
+@media(max-width:380px){
+  .ko{grid-template-columns:auto 1fr;}
+  .ko-when{grid-column:1 / -1;text-align:left;display:flex;gap:8px;align-items:center}
+  .ko-when .ko-time{margin-top:0;margin-left:4px}
+  .ko-stage{writing-mode:horizontal-tb;transform:none;min-height:0;align-self:start}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hero">
+    <span class="brand-text" style="font-size:20px;letter-spacing:-0.015em">FIFA WORLD CUP<br><small style="opacity:1;color:var(--mm-lime);font-size:11px;letter-spacing:0.22em;margin-top:4px">— 2026 —</small></span>
+    <span class="allin">ALL IN</span>
+  </header>
+
+  <!-- POSTER -->
+  <div class="poster">
+    <h1>Never miss a <span class="lime">goal.</span><br><span class="pink">Wherever you go</span></h1>
+    <div class="corner">JUNE 11<br>↓<br>JULY 19</div>
+  </div>
+
+  <!-- TIMEZONE -->
+  <section class="section">
+    <div class="section-label">Watching from</div>
+    <div class="tz-picker" id="tzPicker" role="group" aria-label="Pick your timezone">
+      <!-- buttons injected -->
+    </div>
+    <div class="tz-note" id="tzNote">All kickoff times below recalculate live.</div>
+  </section>
+
+  <!-- TEAM PICKER -->
+  <section class="section">
+    <div class="section-label">Pick your team</div>
+    <div class="team-search">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="teamSearch" placeholder="Type a country (e.g. England, Brazil, Japan…)" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="team-grid" id="teamGrid" role="listbox" aria-label="All 48 qualified teams">
+      <!-- team rows injected -->
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <main id="result" class="fan-card"></main>
+
+  <!-- INITIAL EMPTY STATE -->
+  <div id="emptyState" class="empty">
+    <div class="big">Pick a team <span class="arrow">↑</span></div>
+    <p>All 48 qualifiers — group games, both knockout paths, all in your local time.</p>
+  </div>
+
+  <!-- CTA -->
+  <section class="outro">
+    <span class="starburst" style="top:-22px;right:14px;transform:rotate(12deg)">match<br>day<br>parties</span>
+    <h3>We're showing the top games —<br>check with your hostel reception</h3>
+    <p>20+ social hostels across Thailand, Cambodia, Vietnam, Laos, Philippines & Indonesia. Big screens. Cold beers. Strangers who become squad.</p>
+    <div class="cta-row">
+      <a class="cta" href="https://madmonkeyhostels.com" target="_blank" rel="noopener">FIND A BED →</a>
+      <a class="cta" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">SWITCH TEAM</a>
+    </div>
+  </section>
+
+  <!-- LOGO FEATURE -->
+  <section class="logo-feature" aria-label="Mad Monkey Hostels">
+    <span class="lf-mark"><img id="brandLogo" alt="Mad Monkey"></span>
+    <span class="lf-text">MAD MONKEY<small>Hostels · SE Asia</small></span>
+  </section>
+
+  <footer class="footer">
+    Built by Mad Monkey for backpackers who refuse to miss kickoff.<br>
+    <span class="small">Fixtures: official FIFA schedule · times verified May 2026</span>
+  </footer>
+</div>
+
+<script id="appData" type="application/json">{"teams":[{"code":"ALG","name":"Algeria","flag":"🇩🇿","group":"J"},{"code":"ARG","name":"Argentina","flag":"🇦🇷","group":"J"},{"code":"AUS","name":"Australia","flag":"🇦🇺","group":"D"},{"code":"AUT","name":"Austria","flag":"🇦🇹","group":"J"},{"code":"BEL","name":"Belgium","flag":"🇧🇪","group":"G"},{"code":"BIH","name":"Bosnia & Herzegovina","flag":"🇧🇦","group":"B"},{"code":"BRA","name":"Brazil","flag":"🇧🇷","group":"C"},{"code":"CAN","name":"Canada","flag":"🇨🇦","group":"B"},{"code":"CPV","name":"Cape Verde","flag":"🇨🇻","group":"H"},{"code":"COL","name":"Colombia","flag":"🇨🇴","group":"K"},{"code":"CRO","name":"Croatia","flag":"🇭🇷","group":"L"},{"code":"CUW","name":"Curaçao","flag":"🇨🇼","group":"E"},{"code":"CZE","name":"Czechia","flag":"🇨🇿","group":"A"},{"code":"CIV","name":"Côte d'Ivoire","flag":"🇨🇮","group":"E"},{"code":"COD","name":"DR Congo","flag":"🇨🇩","group":"K"},{"code":"ECU","name":"Ecuador","flag":"🇪🇨","group":"E"},{"code":"EGY","name":"Egypt","flag":"🇪🇬","group":"G"},{"code":"ENG","name":"England","flag":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","group":"L"},{"code":"FRA","name":"France","flag":"🇫🇷","group":"I"},{"code":"GER","name":"Germany","flag":"🇩🇪","group":"E"},{"code":"GHA","name":"Ghana","flag":"🇬🇭","group":"L"},{"code":"HAI","name":"Haiti","flag":"🇭🇹","group":"C"},{"code":"IRN","name":"Iran","flag":"🇮🇷","group":"G"},{"code":"IRQ","name":"Iraq","flag":"🇮🇶","group":"I"},{"code":"JPN","name":"Japan","flag":"🇯🇵","group":"F"},{"code":"JOR","name":"Jordan","flag":"🇯🇴","group":"J"},{"code":"MEX","name":"Mexico","flag":"🇲🇽","group":"A"},{"code":"MAR","name":"Morocco","flag":"🇲🇦","group":"C"},{"code":"NED","name":"Netherlands","flag":"🇳🇱","group":"F"},{"code":"NZL","name":"New Zealand","flag":"🇳🇿","group":"G"},{"code":"NOR","name":"Norway","flag":"🇳🇴","group":"I"},{"code":"PAN","name":"Panama","flag":"🇵🇦","group":"L"},{"code":"PAR","name":"Paraguay","flag":"🇵🇾","group":"D"},{"code":"POR","name":"Portugal","flag":"🇵🇹","group":"K"},{"code":"QAT","name":"Qatar","flag":"🇶🇦","group":"B"},{"code":"KSA","name":"Saudi Arabia","flag":"🇸🇦","group":"H"},{"code":"SCO","name":"Scotland","flag":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","group":"C"},{"code":"SEN","name":"Senegal","flag":"🇸🇳","group":"I"},{"code":"RSA","name":"South Africa","flag":"🇿🇦","group":"A"},{"code":"KOR","name":"South Korea","flag":"🇰🇷","group":"A"},{"code":"ESP","name":"Spain","flag":"🇪🇸","group":"H"},{"code":"SWE","name":"Sweden","flag":"🇸🇪","group":"F"},{"code":"SUI","name":"Switzerland","flag":"🇨🇭","group":"B"},{"code":"TUN","name":"Tunisia","flag":"🇹🇳","group":"F"},{"code":"TUR","name":"Türkiye","flag":"🇹🇷","group":"D"},{"code":"URU","name":"Uruguay","flag":"🇺🇾","group":"H"},{"code":"USA","name":"USA","flag":"🇺🇸","group":"D"},{"code":"UZB","name":"Uzbekistan","flag":"🇺🇿","group":"K"}],"fixtures":[{"a":"MEX","b":"RSA","t":"2026-06-11T19:00:00Z","venue":"Estadio Azteca","city":"Mexico City","group":"A"},{"a":"KOR","b":"CZE","t":"2026-06-12T02:00:00Z","venue":"Estadio Akron","city":"Guadalajara","group":"A"},{"a":"CZE","b":"RSA","t":"2026-06-18T16:00:00Z","venue":"Atlanta Stadium","city":"Atlanta","group":"A"},{"a":"MEX","b":"KOR","t":"2026-06-19T01:00:00Z","venue":"Estadio Akron","city":"Guadalajara","group":"A"},{"a":"CZE","b":"MEX","t":"2026-06-25T01:00:00Z","venue":"Estadio Azteca","city":"Mexico City","group":"A"},{"a":"RSA","b":"KOR","t":"2026-06-25T01:00:00Z","venue":"Estadio BBVA","city":"Monterrey","group":"A"},{"a":"CAN","b":"BIH","t":"2026-06-12T19:00:00Z","venue":"BMO Field","city":"Toronto","group":"B"},{"a":"QAT","b":"SUI","t":"2026-06-13T19:00:00Z","venue":"Levi's Stadium","city":"San Francisco Bay","group":"B"},{"a":"SUI","b":"BIH","t":"2026-06-18T19:00:00Z","venue":"Los Angeles Stadium","city":"Los Angeles","group":"B"},{"a":"CAN","b":"QAT","t":"2026-06-18T22:00:00Z","venue":"BC Place","city":"Vancouver","group":"B"},{"a":"SUI","b":"CAN","t":"2026-06-24T19:00:00Z","venue":"BC Place","city":"Vancouver","group":"B"},{"a":"BIH","b":"QAT","t":"2026-06-24T19:00:00Z","venue":"Lumen Field","city":"Seattle","group":"B"},{"a":"BRA","b":"MAR","t":"2026-06-13T22:00:00Z","venue":"NY/NJ Stadium","city":"New Jersey","group":"C"},{"a":"HAI","b":"SCO","t":"2026-06-14T01:00:00Z","venue":"Boston Stadium","city":"Foxborough","group":"C"},{"a":"SCO","b":"MAR","t":"2026-06-19T22:00:00Z","venue":"Boston Stadium","city":"Foxborough","group":"C"},{"a":"BRA","b":"HAI","t":"2026-06-20T00:30:00Z","venue":"Philadelphia Stadium","city":"Philadelphia","group":"C"},{"a":"SCO","b":"BRA","t":"2026-06-24T22:00:00Z","venue":"Hard Rock Stadium","city":"Miami","group":"C"},{"a":"MAR","b":"HAI","t":"2026-06-24T22:00:00Z","venue":"Atlanta Stadium","city":"Atlanta","group":"C"},{"a":"USA","b":"PAR","t":"2026-06-13T01:00:00Z","venue":"Los Angeles Stadium","city":"Los Angeles","group":"D"},{"a":"AUS","b":"TUR","t":"2026-06-14T16:00:00Z","venue":"BC Place","city":"Vancouver","group":"D"},{"a":"USA","b":"AUS","t":"2026-06-19T19:00:00Z","venue":"Lumen Field","city":"Seattle","group":"D"},{"a":"TUR","b":"PAR","t":"2026-06-20T03:00:00Z","venue":"Levi's Stadium","city":"San Francisco Bay","group":"D"},{"a":"TUR","b":"USA","t":"2026-06-26T02:00:00Z","venue":"Los Angeles Stadium","city":"Los Angeles","group":"D"},{"a":"PAR","b":"AUS","t":"2026-06-26T02:00:00Z","venue":"Levi's Stadium","city":"San Francisco Bay","group":"D"},{"a":"GER","b":"CUW","t":"2026-06-14T17:00:00Z","venue":"NRG Stadium","city":"Houston","group":"E"},{"a":"CIV","b":"ECU","t":"2026-06-14T23:00:00Z","venue":"Philadelphia Stadium","city":"Philadelphia","group":"E"},{"a":"GER","b":"CIV","t":"2026-06-20T20:00:00Z","venue":"BMO Field","city":"Toronto","group":"E"},{"a":"ECU","b":"CUW","t":"2026-06-21T00:00:00Z","venue":"Arrowhead Stadium","city":"Kansas City","group":"E"},{"a":"CUW","b":"CIV","t":"2026-06-25T20:00:00Z","venue":"Philadelphia Stadium","city":"Philadelphia","group":"E"},{"a":"ECU","b":"GER","t":"2026-06-25T20:00:00Z","venue":"NY/NJ Stadium","city":"New Jersey","group":"E"},{"a":"NED","b":"JPN","t":"2026-06-14T20:00:00Z","venue":"Dallas Stadium","city":"Dallas","group":"F"},{"a":"SWE","b":"TUN","t":"2026-06-15T02:00:00Z","venue":"Estadio BBVA","city":"Monterrey","group":"F"},{"a":"NED","b":"SWE","t":"2026-06-20T17:00:00Z","venue":"NRG Stadium","city":"Houston","group":"F"},{"a":"TUN","b":"JPN","t":"2026-06-21T04:00:00Z","venue":"Estadio BBVA","city":"Monterrey","group":"F"},{"a":"JPN","b":"SWE","t":"2026-06-25T23:00:00Z","venue":"Dallas Stadium","city":"Dallas","group":"F"},{"a":"TUN","b":"NED","t":"2026-06-25T23:00:00Z","venue":"Arrowhead Stadium","city":"Kansas City","group":"F"},{"a":"BEL","b":"EGY","t":"2026-06-15T19:00:00Z","venue":"Lumen Field","city":"Seattle","group":"G"},{"a":"IRN","b":"NZL","t":"2026-06-16T01:00:00Z","venue":"Los Angeles Stadium","city":"Los Angeles","group":"G"},{"a":"BEL","b":"IRN","t":"2026-06-21T19:00:00Z","venue":"Los Angeles Stadium","city":"Los Angeles","group":"G"},{"a":"NZL","b":"EGY","t":"2026-06-22T01:00:00Z","venue":"BC Place","city":"Vancouver","group":"G"},{"a":"EGY","b":"IRN","t":"2026-06-27T03:00:00Z","venue":"Lumen Field","city":"Seattle","group":"G"},{"a":"NZL","b":"BEL","t":"2026-06-27T03:00:00Z","venue":"BC Place","city":"Vancouver","group":"G"},{"a":"ESP","b":"CPV","t":"2026-06-15T16:00:00Z","venue":"Atlanta Stadium","city":"Atlanta","group":"H"},{"a":"KSA","b":"URU","t":"2026-06-15T22:00:00Z","venue":"Hard Rock Stadium","city":"Miami","group":"H"},{"a":"ESP","b":"KSA","t":"2026-06-21T16:00:00Z","venue":"Atlanta Stadium","city":"Atlanta","group":"H"},{"a":"URU","b":"CPV","t":"2026-06-21T22:00:00Z","venue":"Hard Rock Stadium","city":"Miami","group":"H"},{"a":"CPV","b":"KSA","t":"2026-06-27T00:00:00Z","venue":"NRG Stadium","city":"Houston","group":"H"},{"a":"URU","b":"ESP","t":"2026-06-27T00:00:00Z","venue":"Estadio Akron","city":"Guadalajara","group":"H"},{"a":"FRA","b":"SEN","t":"2026-06-16T19:00:00Z","venue":"NY/NJ Stadium","city":"New Jersey","group":"I"},{"a":"IRQ","b":"NOR","t":"2026-06-16T22:00:00Z","venue":"Boston Stadium","city":"Foxborough","group":"I"},{"a":"FRA","b":"IRQ","t":"2026-06-22T21:00:00Z","venue":"Philadelphia Stadium","city":"Philadelphia","group":"I"},{"a":"NOR","b":"SEN","t":"2026-06-23T00:00:00Z","venue":"NY/NJ Stadium","city":"New Jersey","group":"I"},{"a":"NOR","b":"FRA","t":"2026-06-26T19:00:00Z","venue":"Boston Stadium","city":"Foxborough","group":"I"},{"a":"SEN","b":"IRQ","t":"2026-06-26T19:00:00Z","venue":"BMO Field","city":"Toronto","group":"I"},{"a":"ARG","b":"ALG","t":"2026-06-17T01:00:00Z","venue":"Arrowhead Stadium","city":"Kansas City","group":"J"},{"a":"AUT","b":"JOR","t":"2026-06-17T04:00:00Z","venue":"Levi's Stadium","city":"San Francisco Bay","group":"J"},{"a":"ARG","b":"AUT","t":"2026-06-22T17:00:00Z","venue":"Dallas Stadium","city":"Dallas","group":"J"},{"a":"JOR","b":"ALG","t":"2026-06-23T03:00:00Z","venue":"Levi's Stadium","city":"San Francisco Bay","group":"J"},{"a":"ALG","b":"AUT","t":"2026-06-28T02:00:00Z","venue":"Arrowhead Stadium","city":"Kansas City","group":"J"},{"a":"JOR","b":"ARG","t":"2026-06-28T02:00:00Z","venue":"Dallas Stadium","city":"Dallas","group":"J"},{"a":"POR","b":"COD","t":"2026-06-17T17:00:00Z","venue":"NRG Stadium","city":"Houston","group":"K"},{"a":"UZB","b":"COL","t":"2026-06-18T02:00:00Z","venue":"Estadio Azteca","city":"Mexico City","group":"K"},{"a":"POR","b":"UZB","t":"2026-06-23T17:00:00Z","venue":"NRG Stadium","city":"Houston","group":"K"},{"a":"COL","b":"COD","t":"2026-06-24T02:00:00Z","venue":"Estadio Akron","city":"Guadalajara","group":"K"},{"a":"COL","b":"POR","t":"2026-06-27T23:30:00Z","venue":"Hard Rock Stadium","city":"Miami","group":"K"},{"a":"COD","b":"UZB","t":"2026-06-27T23:30:00Z","venue":"Atlanta Stadium","city":"Atlanta","group":"K"},{"a":"ENG","b":"CRO","t":"2026-06-17T20:00:00Z","venue":"Dallas Stadium","city":"Dallas","group":"L"},{"a":"GHA","b":"PAN","t":"2026-06-17T23:00:00Z","venue":"BMO Field","city":"Toronto","group":"L"},{"a":"ENG","b":"GHA","t":"2026-06-23T20:00:00Z","venue":"Boston Stadium","city":"Foxborough","group":"L"},{"a":"PAN","b":"CRO","t":"2026-06-23T23:00:00Z","venue":"BMO Field","city":"Toronto","group":"L"},{"a":"PAN","b":"ENG","t":"2026-06-27T21:00:00Z","venue":"NY/NJ Stadium","city":"New Jersey","group":"L"},{"a":"CRO","b":"GHA","t":"2026-06-27T21:00:00Z","venue":"Philadelphia Stadium","city":"Philadelphia","group":"L"}],"paths":{"AW":[{"stage":"R32","opp":"Best 3rd of C/E/F/H/I","venue":"Estadio Azteca","city":"Mexico City","t":"2026-07-02T01:00:00Z"},{"stage":"R16","opp":"Winner Group L","venue":"Estadio Azteca","city":"Mexico City","t":"2026-07-06T00:00:00Z"},{"stage":"QF","opp":"TBD via Group F/C/L path","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"AR":[{"stage":"R32","opp":"Runner-up Group B","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-06-28T19:00:00Z"},{"stage":"R16","opp":"Winner Group C or F","venue":"NRG Stadium","city":"Houston","t":"2026-07-04T17:00:00Z"},{"stage":"QF","opp":"TBD via Group E/I path","venue":"Boston Stadium","city":"Foxborough","t":"2026-07-09T20:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"BW":[{"stage":"R32","opp":"Best 3rd of E/F/G/I/J","venue":"BC Place","city":"Vancouver","t":"2026-07-03T03:00:00Z"},{"stage":"R16","opp":"Winner Group K","venue":"BC Place","city":"Vancouver","t":"2026-07-07T20:00:00Z"},{"stage":"QF","opp":"TBD via Group J/H path","venue":"Arrowhead Stadium","city":"Kansas City","t":"2026-07-12T01:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"BR":[{"stage":"R32","opp":"Runner-up Group A","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-06-28T19:00:00Z"},{"stage":"R16","opp":"Winner Group C or F","venue":"NRG Stadium","city":"Houston","t":"2026-07-04T17:00:00Z"},{"stage":"QF","opp":"TBD via Group E/I path","venue":"Boston Stadium","city":"Foxborough","t":"2026-07-09T20:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"CW":[{"stage":"R32","opp":"Runner-up Group F","venue":"NRG Stadium","city":"Houston","t":"2026-06-29T17:00:00Z"},{"stage":"R16","opp":"Winner Group E or runner-up I","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-05T20:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"CR":[{"stage":"R32","opp":"Winner Group F","venue":"Estadio BBVA","city":"Monterrey","t":"2026-06-30T01:00:00Z"},{"stage":"R16","opp":"Winner Group A2/B2 path","venue":"NRG Stadium","city":"Houston","t":"2026-07-04T17:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Boston Stadium","city":"Foxborough","t":"2026-07-09T20:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"DW":[{"stage":"R32","opp":"Best 3rd of B/E/F/I/J","venue":"Levi's Stadium","city":"San Francisco Bay","t":"2026-07-02T00:00:00Z"},{"stage":"R16","opp":"Winner Group G","venue":"Lumen Field","city":"Seattle","t":"2026-07-07T00:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-07-10T19:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"DR":[{"stage":"R32","opp":"Runner-up Group G","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-03T18:00:00Z"},{"stage":"R16","opp":"Winner Group J or runner-up H","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-07T16:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"EW":[{"stage":"R32","opp":"Best 3rd of A/B/C/D/F","venue":"Boston Stadium","city":"Foxborough","t":"2026-06-29T20:30:00Z"},{"stage":"R16","opp":"Winner Group I","venue":"Philadelphia Stadium","city":"Philadelphia","t":"2026-07-04T21:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Boston Stadium","city":"Foxborough","t":"2026-07-09T20:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"ER":[{"stage":"R32","opp":"Runner-up Group I","venue":"Dallas Stadium","city":"Dallas","t":"2026-06-30T17:00:00Z"},{"stage":"R16","opp":"Winner Group C","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-05T20:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"FW":[{"stage":"R32","opp":"Runner-up Group C","venue":"Estadio BBVA","city":"Monterrey","t":"2026-06-30T01:00:00Z"},{"stage":"R16","opp":"Winner Group A2/B2 path","venue":"NRG Stadium","city":"Houston","t":"2026-07-04T17:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Boston Stadium","city":"Foxborough","t":"2026-07-09T20:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"FR":[{"stage":"R32","opp":"Winner Group C","venue":"NRG Stadium","city":"Houston","t":"2026-06-29T17:00:00Z"},{"stage":"R16","opp":"Winner Group E or runner-up I","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-05T20:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"GW":[{"stage":"R32","opp":"Best 3rd of A/E/H/I/J","venue":"Lumen Field","city":"Seattle","t":"2026-07-01T20:00:00Z"},{"stage":"R16","opp":"Winner Group D","venue":"Lumen Field","city":"Seattle","t":"2026-07-07T00:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-07-10T19:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"GR":[{"stage":"R32","opp":"Runner-up Group D","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-03T18:00:00Z"},{"stage":"R16","opp":"Winner Group J or runner-up H","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-07T16:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"HW":[{"stage":"R32","opp":"Runner-up Group J","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-07-02T19:00:00Z"},{"stage":"R16","opp":"Winner Group K or runner-up L","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-06T19:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-07-10T19:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"HR":[{"stage":"R32","opp":"Winner Group J","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-03T22:00:00Z"},{"stage":"R16","opp":"Winner Group D2/G2 path","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-07T16:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"IW":[{"stage":"R32","opp":"Best 3rd of C/D/F/G/H","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-06-30T21:00:00Z"},{"stage":"R16","opp":"Winner Group E","venue":"Philadelphia Stadium","city":"Philadelphia","t":"2026-07-04T21:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Boston Stadium","city":"Foxborough","t":"2026-07-09T20:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"IR":[{"stage":"R32","opp":"Runner-up Group E","venue":"Dallas Stadium","city":"Dallas","t":"2026-06-30T17:00:00Z"},{"stage":"R16","opp":"Winner Group C","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-05T20:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"JW":[{"stage":"R32","opp":"Runner-up Group H","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-03T22:00:00Z"},{"stage":"R16","opp":"Winner Group D2/G2 path","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-07T16:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"JR":[{"stage":"R32","opp":"Winner Group H","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-07-02T19:00:00Z"},{"stage":"R16","opp":"Winner Group K or runner-up L","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-06T19:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-07-10T19:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"KW":[{"stage":"R32","opp":"Best 3rd of D/E/I/J/L","venue":"Arrowhead Stadium","city":"Kansas City","t":"2026-07-04T01:30:00Z"},{"stage":"R16","opp":"Winner Group B","venue":"BC Place","city":"Vancouver","t":"2026-07-07T20:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Arrowhead Stadium","city":"Kansas City","t":"2026-07-12T01:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"KR":[{"stage":"R32","opp":"Runner-up Group L","venue":"BMO Field","city":"Toronto","t":"2026-07-02T23:00:00Z"},{"stage":"R16","opp":"Winner Group H or runner-up J","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-06T19:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-07-10T19:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"LW":[{"stage":"R32","opp":"Best 3rd of E/H/I/J/K","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-01T16:00:00Z"},{"stage":"R16","opp":"Winner Group A","venue":"Estadio Azteca","city":"Mexico City","t":"2026-07-06T00:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Hard Rock Stadium","city":"Miami","t":"2026-07-11T21:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Atlanta Stadium","city":"Atlanta","t":"2026-07-15T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}],"LR":[{"stage":"R32","opp":"Runner-up Group K","venue":"BMO Field","city":"Toronto","t":"2026-07-02T23:00:00Z"},{"stage":"R16","opp":"Winner Group H or runner-up J","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-06T19:00:00Z"},{"stage":"QF","opp":"TBD","venue":"Los Angeles Stadium","city":"Los Angeles","t":"2026-07-10T19:00:00Z"},{"stage":"SF","opp":"TBD","venue":"Dallas Stadium","city":"Dallas","t":"2026-07-14T19:00:00Z"},{"stage":"F","opp":"TBD","venue":"NY/NJ Stadium","city":"New Jersey","t":"2026-07-19T19:00:00Z"}]},"third":{"A":["E","G"],"B":["E","D"],"C":["E","I","A"],"D":["E","I","K"],"E":["A","L","D","G","B","K"],"F":["E","I","A","D","B"],"G":["I","B"],"H":["I","A","L","G"],"I":["A","L","D","G","B","K"],"J":["L","D","G","B","K"],"K":["L"],"L":["K"]}}</script>
+<script>window.__MM_LOGO_B64__="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";
+(function(){
+  'use strict';
+
+  // ---- DATA -------------------------------------------------------
+  const DATA = JSON.parse(document.getElementById('appData').textContent);
+  const TEAMS_BY_CODE = {};
+  DATA.teams.forEach(t => TEAMS_BY_CODE[t.code] = t);
+
+  // Cambodia, Thailand, Laos all share Indochina Time (UTC+7).
+  // Manila and Bali share UTC+8. We keep them as 5 separate buttons.
+  const TZONES = [
+    { id:'KH', label:'Cambodia',  flag:'🇰🇭', zone:'Asia/Phnom_Penh' },
+    { id:'TH', label:'Thailand',  flag:'🇹🇭', zone:'Asia/Bangkok' },
+    { id:'LA', label:'Laos',      flag:'🇱🇦', zone:'Asia/Vientiane' },
+    { id:'PH', label:'Manila',    flag:'🇵🇭', zone:'Asia/Manila' },
+    { id:'ID', label:'Bali',      flag:'🇮🇩', zone:'Asia/Makassar' }
+  ];
+
+  // ---- STATE ------------------------------------------------------
+  const state = {
+    tz:   TZONES[1], // default to Thailand (largest backpacker scene)
+    team: null,
+    path: 'W',       // 'W' = winner path, 'R' = runner-up
+    search: ''
+  };
+
+  // ---- TIME HELPERS ----------------------------------------------
+  const dayFmt = {};   // memoized formatters per zone
+  const timeFmt = {};
+  function fmtDay(iso, zone) {
+    const k = zone;
+    if (!dayFmt[k]) {
+      dayFmt[k] = new Intl.DateTimeFormat('en-GB', {
+        timeZone: zone, weekday:'short', day:'numeric', month:'short'
+      });
+    }
+    return dayFmt[k].format(new Date(iso)).toUpperCase();
+  }
+  function fmtTime(iso, zone) {
+    const k = zone;
+    if (!timeFmt[k]) {
+      timeFmt[k] = new Intl.DateTimeFormat('en-GB', {
+        timeZone: zone, hour:'numeric', minute:'2-digit', hour12: false
+      });
+    }
+    return timeFmt[k].format(new Date(iso));
+  }
+  // Detect "late night" kickoffs in the user's local timezone — 11pm to 6am
+  function isLateNight(iso, zone){
+    const h = parseInt(fmtTime(iso, zone).split(':')[0], 10);
+    return h >= 23 || h < 6;
+  }
+
+  // ---- RENDER HELPERS --------------------------------------------
+  const $ = sel => document.querySelector(sel);
+  const el = (tag, attrs={}, children=[]) => {
+    const e = document.createElement(tag);
+    for (const k in attrs) {
+      if (k === 'class') e.className = attrs[k];
+      else if (k === 'html') e.innerHTML = attrs[k];
+      else if (k.startsWith('on') && typeof attrs[k] === 'function') e.addEventListener(k.slice(2), attrs[k]);
+      else e.setAttribute(k, attrs[k]);
+    }
+    (Array.isArray(children) ? children : [children]).forEach(c => {
+      if (c == null) return;
+      e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return e;
+  };
+
+  // ---- TIMEZONE PICKER -------------------------------------------
+  function renderTzPicker(){
+    const root = $('#tzPicker');
+    root.innerHTML = '';
+    TZONES.forEach(tz => {
+      const b = el('button', {
+        class: 'tz-btn',
+        type: 'button',
+        'aria-pressed': tz.id === state.tz.id ? 'true' : 'false',
+        'data-tz': tz.id,
+        onclick: () => {
+          state.tz = tz;
+          renderTzPicker();
+          renderTeamCard();
+          updateTzNote();
+        }
+      }, [
+        el('span', { class:'flag', 'aria-hidden':'true' }, tz.flag),
+        el('span', { class:'name' }, tz.label)
+      ]);
+      root.appendChild(b);
+    });
+  }
+
+  function updateTzNote(){
+    const n = $('#tzNote');
+    n.innerHTML = 'Times shown for <strong>' + state.tz.flag + ' ' + state.tz.label + '</strong>';
+  }
+
+  // ---- TEAM GRID --------------------------------------------------
+  function renderTeamGrid(){
+    const root = $('#teamGrid');
+    root.innerHTML = '';
+    const q = state.search.trim().toLowerCase();
+    const list = DATA.teams.filter(t => !q || t.name.toLowerCase().includes(q) || t.code.toLowerCase().includes(q));
+    if (!list.length) {
+      root.appendChild(el('div', { class:'team-row', style:'grid-column:1/-1;justify-content:center;background:transparent;border:none' }, 'No match — try another spelling'));
+      return;
+    }
+    list.forEach(t => {
+      root.appendChild(el('button', {
+        class: 'team-row',
+        type: 'button',
+        'aria-pressed': state.team && state.team.code === t.code ? 'true' : 'false',
+        onclick: () => pickTeam(t.code)
+      }, [
+        el('span', { class:'flag', 'aria-hidden':'true' }, t.flag),
+        el('span', { class:'tn' }, t.name),
+        el('span', { class:'grp' }, t.group)
+      ]));
+    });
+  }
+
+  // ---- TEAM CARD --------------------------------------------------
+  function pickTeam(code){
+    state.team = TEAMS_BY_CODE[code];
+    state.path = 'W';
+    renderTeamGrid();
+    renderTeamCard();
+    // smooth scroll to result
+    setTimeout(() => {
+      const r = $('#result');
+      if (r && r.firstChild) r.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 60);
+  }
+
+  function renderTeamCard(){
+    const root = $('#result');
+    root.innerHTML = '';
+    const empty = $('#emptyState');
+    if (!state.team) { empty.classList.remove('hidden'); return; }
+    empty.classList.add('hidden');
+
+    const t = state.team;
+    const grp = t.group;
+
+    // BANNER
+    const banner = el('div', { class:'team-banner' }, [
+      el('div', { class:'flag-big', 'aria-hidden':'true' }, t.flag),
+      el('h2', {}, t.name + ' · Group ' + grp),
+      el('div', { class:'meta' }, [
+        el('span', { class:'tag' }, '3 GROUP GAMES'),
+        el('span', { class:'tag pink' }, 'KICKOFF JUN ' + (grp === 'A' ? '11' : grp <= 'D' ? '12-14' : grp <= 'I' ? '14-17' : '17')),
+        el('span', { class:'tag alt' }, state.tz.flag + ' ' + state.tz.label + ' time')
+      ])
+    ]);
+    root.appendChild(banner);
+
+    // GROUP OPPONENTS STRIP
+    const groupTeams = DATA.teams.filter(x => x.group === grp);
+    const oppRow = el('div', { class:'group-list' });
+    groupTeams.forEach(x => {
+      oppRow.appendChild(el('span', { class:'opp' + (x.code === t.code ? ' self' : '') }, [
+        el('span', { class:'flag', 'aria-hidden':'true' }, x.flag),
+        document.createTextNode(' ' + x.name.toUpperCase())
+      ]));
+    });
+    root.appendChild(el('div', { class:'group-strip' }, [
+      el('h3', {}, 'GROUP ' + grp + ' SQUAD'),
+      oppRow
+    ]));
+
+    // GROUP STAGE FIXTURES
+    root.appendChild(el('div', { class:'section-label', style:'margin-top:24px' }, [document.createTextNode('Group stage')]));
+    const fixtures = DATA.fixtures
+      .filter(f => f.a === t.code || f.b === t.code)
+      .sort((a,b) => a.t < b.t ? -1 : 1);
+    fixtures.forEach((f, i) => {
+      const isHome = f.a === t.code;
+      const opp = isHome ? TEAMS_BY_CODE[f.b] : TEAMS_BY_CODE[f.a];
+      const late = isLateNight(f.t, state.tz.zone);
+      const card = el('div', { class:'fix' + (late ? ' day-night' : '') }, [
+        el('div', { class:'fix-md' }, 'MATCHDAY ' + (i+1) + ' · ' + (late ? '🌙 LATE ONE' : '☀️ PRIMETIME-ISH')),
+        el('div', { class:'fix-vs' }, [
+          el('span', { class:'flag', 'aria-hidden':'true' }, t.flag),
+          document.createTextNode(' ' + t.name.toUpperCase() + ' '),
+          el('span', { class:'v' }, 'vs'),
+          document.createTextNode(' ' + opp.name.toUpperCase() + ' '),
+          el('span', { class:'flag', 'aria-hidden':'true' }, opp.flag)
+        ]),
+        el('div', { class:'fix-venue' }, f.venue + ' · ' + f.city),
+        el('div', { class:'fix-time' }, [
+          el('span', { class:'day' }, fmtDay(f.t, state.tz.zone)),
+          el('span', { class:'ko' }, fmtTime(f.t, state.tz.zone)),
+          el('span', { class:'ko-meta' }, state.tz.flag + ' ' + state.tz.label + ' kickoff')
+        ])
+      ]);
+      root.appendChild(card);
+    });
+
+    // KNOCKOUT PATH SECTION
+    root.appendChild(el('div', { class:'section-label', style:'margin-top:28px' }, [document.createTextNode('If you make the knockouts')]));
+    // Toggle between winner & runner-up
+    const toggle = el('div', { class:'path-toggle' }, [
+      el('button', {
+        class:'path-btn', type:'button',
+        'aria-pressed': state.path === 'W' ? 'true' : 'false',
+        onclick: () => { state.path = 'W'; renderTeamCard(); }
+      }, [document.createTextNode('Win Group ' + grp), el('small', {}, 'TOP OF THE PILE')]),
+      el('button', {
+        class:'path-btn', type:'button',
+        'aria-pressed': state.path === 'R' ? 'true' : 'false',
+        onclick: () => { state.path = 'R'; renderTeamCard(); }
+      }, [document.createTextNode('Finish 2nd'), el('small', {}, 'STILL ALIVE')])
+    ]);
+    root.appendChild(toggle);
+
+    // Intro line
+    const intro = state.path === 'W'
+      ? `Top of <strong>Group ${grp}</strong>? Here's where the road takes you — five wins from glory.`
+      : `Runner-up in <strong>Group ${grp}</strong>? Slightly tougher bracket, but you're still in it. Five wins to lift it.`;
+    root.appendChild(el('div', { class:'path-intro', html: intro }));
+
+    // Path stages
+    const path = DATA.paths[grp + state.path];
+    const stageLabels = { R32:'ROUND OF 32', R16:'ROUND OF 16', QF:'QUARTER-FINAL', SF:'SEMI-FINAL', F:'THE FINAL' };
+    const stageClass = { F:'final', SF:'sf' };
+    path.forEach(stg => {
+      const card = el('div', { class:'ko ' + (stageClass[stg.stage] || '') }, [
+        el('div', { class:'ko-stage' }, stageLabels[stg.stage]),
+        el('div', { class:'ko-body' }, [
+          el('div', { class:'ko-vs' }, [
+            el('strong', {}, t.name.toUpperCase()),
+            document.createTextNode('vs ' + stg.opp)
+          ]),
+          el('div', { class:'ko-venue' }, '📍 ' + stg.venue + ' · ' + stg.city)
+        ]),
+        el('div', { class:'ko-when' }, [
+          el('span', { class:'day' }, fmtDay(stg.t, state.tz.zone)),
+          el('span', { class:'ko-time' }, fmtTime(stg.t, state.tz.zone))
+        ])
+      ]);
+      root.appendChild(card);
+    });
+
+    // PATH NOTE
+    if (state.path === 'W') {
+      root.appendChild(el('div', { class:'path-note' }, [
+        el('strong', {}, 'WHY THIS PATH'),
+        document.createTextNode('Group winners get the kinder R32 draw — you face a best-3rd-placed team from another group. Win that, and the bracket opens up.')
+      ]));
+    } else {
+      root.appendChild(el('div', { class:'path-note' }, [
+        el('strong', {}, 'WHY THIS PATH'),
+        document.createTextNode("Runners-up usually face a group winner from the round of 16. Argentina, Spain, France or one of the other heavy hitters could be waiting. Don't get attached to a bunk till July 19.")
+      ]));
+    }
+
+    // THIRD-PLACE NOTE
+    const thirdOpps = DATA.third[grp] || [];
+    const oppList = thirdOpps.map(g => 'Group ' + g + ' winner').join(thirdOpps.length === 2 ? ' or ' : ', ');
+    root.appendChild(el('div', { class:'third-card' }, [
+      el('h4', {}, '3rd place? Still alive.'),
+      el('p', {}, [
+        document.createTextNode('Top 8 third-place finishers across all 12 groups also advance. If '),
+        el('strong', {}, t.name),
+        document.createTextNode(' sneaks through 3rd, your Round of 32 opponent would be one of: '),
+        el('strong', {}, oppList || 'TBD'),
+        document.createTextNode('. Final 3rd-place rankings decide which.')
+      ])
+    ]));
+  }
+
+  // ---- LOGO --------------------------------------------------------
+  function initLogo(){
+    const img = document.getElementById('brandLogo');
+    if (img && window.__MM_LOGO_B64__) {
+      img.src = 'data:image/png;base64,' + window.__MM_LOGO_B64__;
+    }
+  }
+
+  // ---- SEARCH -----------------------------------------------------
+  function initSearch(){
+    const inp = $('#teamSearch');
+    inp.addEventListener('input', e => {
+      state.search = e.target.value;
+      renderTeamGrid();
+    });
+  }
+
+  // ---- BOOT --------------------------------------------------------
+  initLogo();
+  renderTzPicker();
+  updateTzNote();
+  renderTeamGrid();
+  initSearch();
+  renderTeamCard();
+
+  // expose for debug
+  window.__MM__ = { state, DATA, pickTeam };
+})();
+</script>
+
+</body></html>
